@@ -179,7 +179,7 @@ abstract contract ERC4626 is ERC20, IERC4626 {
     ) internal virtual {
         // If _asset is ERC777, `transferFrom` can trigger a reenterancy BEFORE the transfer happens through the
         // `tokensToSend` hook. On the other hand, the `tokenReceived` hook, that is triggered after the transfer,
-        // calls the vault, which is assumed not malicious.
+        // calls the vault, which is assumed not to be malicious.
         //
         // Conclusion: we need to do the transfer before we mint so that any reentrancy would happen before the
         // assets are transfered and before the shares are minted, which is a valid state.
@@ -206,9 +206,9 @@ abstract contract ERC4626 is ERC20, IERC4626 {
 
         // If _asset is ERC777, `transfer` can trigger a reentrancy AFTER the transfer happens through the
         // `tokensReceived` hook. On the other hand, the `tokensToSend` hook, that is triggered before the transfer,
-        // calls the vault, which is assumed not malicious.
+        // calls the vault, which is assumed not to be malicious.
         //
-        // Conclusion: we need to do the transfer after the burn so that any reentrancy would happen after the
+        // Conclusion: we need to do the transfer after the burn so that if any reentrancy would happen after the
         // shares are burned and after the assets are transfered, which is a valid state.
         _burn(owner, shares);
         SafeERC20.safeTransfer(_asset, receiver, assets);
